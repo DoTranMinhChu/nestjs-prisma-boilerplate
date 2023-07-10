@@ -6,11 +6,13 @@ import { resolve } from 'path';
 import configuration from '@configs/configuration';
 import { UserModule } from '@modules/user/user.module';
 import { QueryPrismaMiddleware } from '@middlewares/queryPrisma.middleware';
+import { AuthModule } from '@modules/auth/auth.module';
 
 
 @Module({
   imports: [
     UserModule,
+    AuthModule,
     ConfigModule.forRoot(
       {
         envFilePath: resolve(`./.env.${process.env['NODE_ENV']}`),

@@ -101,4 +101,14 @@ export class UserRepository {
     ): Promise<Prisma.BatchPayload> {
         return await tx.user.deleteMany({ where: userWhereInput });
     }
+
+
+
+    async findByEmail(email: string): Promise<User | null> {
+        return await this.prisma.user.findFirst({ where: { email } });
+    }
+
+    async findByUsername(username: string): Promise<User | null> {
+        return await this.prisma.user.findFirst({ where: { username } });
+    }
 }
