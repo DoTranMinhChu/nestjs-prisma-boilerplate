@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { resolve } from 'path';
 import configuration from '@configs/configuration';
 import { UserModule } from '@modules/user/user.module';
+import { QueryPrismaMiddleware } from '@middlewares/queryPrisma.middleware';
 
 
 @Module({
@@ -21,4 +22,10 @@ import { UserModule } from '@modules/user/user.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(QueryPrismaMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

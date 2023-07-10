@@ -1,4 +1,6 @@
-import { PrismaRepository } from '@modules/prisma/prisma.repository';
+
+import { QueryInfoPrismaDto } from '@decorators/queryInfoPrisma/queryInfoPisma.dto';
+import { PrismaRepository, PrismaTransation } from '@modules/prisma/prisma.repository';
 import { Injectable } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 
@@ -6,38 +8,97 @@ import { User, Prisma } from '@prisma/client';
 export class UserRepository {
     constructor(private prisma: PrismaRepository) { }
 
-    async user(
-        userWhereUniqueInput: Prisma.UserWhereUniqueInput,
+
+    async findAndCountAll(query?: QueryInfoPrismaDto): Promise<{
+        row: User[];
+        count: number;
+    }> {
+        const [row, count] = await this.prisma.$transaction([
+            this.prisma.user.findMany(query),
+            this.prisma.user.count({
+                where: query?.where,
+            }),
+        ]);
+        return {
+            row,
+            count,
+        };
+    }
+    async upsertById(
+        userCreateInput: Prisma.UserCreateInput,
+        tx: PrismaTransation = this.prisma
+    ): Promise<User> {
+        let user = await tx.user.findFirst({ where: { id: userCreateInput.id!! } });
+        if (!user) {
+            user = await tx.user.create({
+                data: userCreateInput,
+            });
+        } else {
+            user = await tx.user.update({
+                where: {
+                    id: userCreateInput.id!!,
+                },
+                data: userCreateInput,
+            });
+        }
+        return user;
+    }
+
+    async updateById(
+        id: string,
+        userUpdateInput: Prisma.UserUpdateInput,
+        tx: PrismaTransation = this.prisma
+    ): Promise<User> {
+        return await tx.user.update({
+            data: userUpdateInput,
+            where: { id },
+        });
+    }
+
+    async updateMany(
+        userUpdateInput: Prisma.UserUpdateInput,
+        query: QueryInfoPrismaDto,
+        tx: PrismaTransation = this.prisma
+    ): Promise<Prisma.PrismaPromise<Prisma.BatchPayload>> {
+        return await tx.user.updateMany({
+            data: userUpdateInput,
+            where: query.where,
+        });
+    }
+
+    async create(
+        userCreateInput: Prisma.UserCreateInput,
+        tx: PrismaTransation = this.prisma
+    ): Promise<User> {
+        return await tx.user.create({ data: userCreateInput });
+    }
+
+    async findOne(
+        query?: QueryInfoPrismaDto,
+        tx: PrismaTransation = this.prisma
     ): Promise<User | null> {
-        return this.prisma.user.findUnique({
-            where: userWhereUniqueInput,
-        });
+        return await tx.user.findFirst(query);
     }
 
-    async users(): Promise<User[]> {
-        return this.prisma.user.findMany();
+    async findMany(
+        query?: QueryInfoPrismaDto,
+        tx: PrismaTransation = this.prisma
+    ): Promise<User[]> {
+
+        return await tx.user.findMany(query);
     }
 
-    async createUser(data: Prisma.UserCreateInput): Promise<User> {
-        return this.prisma.user.create({
-            data,
-        });
+    async deleteById(
+        id: string,
+        tx: PrismaTransation = this.prisma
+    ): Promise<User> {
+        return await tx.user.delete({ where: { id } });
     }
 
-    async updateUser(params: {
-        where: Prisma.UserWhereUniqueInput;
-        data: Prisma.UserUpdateInput;
-    }): Promise<User> {
-        const { where, data } = params;
-        return this.prisma.user.update({
-            data,
-            where,
-        });
-    }
-
-    async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
-        return this.prisma.user.delete({
-            where,
-        });
+    async deleteMany(
+        userWhereInput: Prisma.UserWhereInput,
+        tx: PrismaTransation = this.prisma
+    ): Promise<Prisma.BatchPayload> {
+        return await tx.user.deleteMany({ where: userWhereInput });
     }
 }
