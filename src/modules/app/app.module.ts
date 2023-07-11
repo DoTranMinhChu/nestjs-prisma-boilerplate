@@ -7,7 +7,8 @@ import configuration from '@configs/configuration';
 import { UserModule } from '@modules/user/user.module';
 import { QueryPrismaMiddleware } from '@middlewares/queryPrisma.middleware';
 import { AuthModule } from '@modules/auth/auth.module';
-
+import { APP_FILTER } from '@nestjs/core';
+import { AllExceptionsFilter } from '@filters/allException.filter';
 
 @Module({
   imports: [
@@ -21,8 +22,15 @@ import { AuthModule } from '@modules/auth/auth.module';
       }
     )
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    AppController,
+  ],
+  providers: [AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    }
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

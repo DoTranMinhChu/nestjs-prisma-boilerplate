@@ -15,6 +15,7 @@ async function bootstrap() {
     .setDescription('The cats API description')
     .setVersion('1.0')
     .build();
+    
   const options: ISwaggerDocumentOptions = {
     operationIdFactory: (
       _controllerKey: string,
@@ -25,7 +26,7 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
   const configService = app.get<ConfigService>(ConfigService);
-
+  
   await app.listen(+configService.get('server.port'));
   Logger.log(`http://localhost:${configService.get('server.port')}`)
 
