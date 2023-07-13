@@ -31,20 +31,24 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
         const ctx = host.switchToHttp();
 
-        let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-        let messageType;
-        let message;
-        if (exception instanceof HttpException) {
-            statusCode = exception.getStatus();
-            message = exception.getResponse();
-            messageType = exception.name;
-        }
-        let responseBody = {
+        const statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+        let responseBody: any = {
             statusCode,
             path: httpAdapter.getRequestUrl(ctx.getRequest()),
-            messageType,
-            message
         };
+        if (exception instanceof HttpException) {
+            responseBody.statusCode = exception.getStatus();
+            const message = exception.getResponse()
+
+            responseBody.type = exception.name;
+            if (typeof message == "object") {
+                responseBody = Object.assign(responseBody, message)
+            } else {
+                responseBody.message = message
+            }
+
+        }
+
         if (exception instanceof BaseException) {
             responseBody = Object.assign(responseBody, exception.options)
         }

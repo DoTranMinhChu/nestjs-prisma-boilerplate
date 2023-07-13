@@ -25,16 +25,16 @@ export class TokenUtil {
         payload: any,
         option: IGenerateTokenOption = {
             exp: "60 days",
-            secret: "config.server.secret"
+            secret: "secret"
         }
     ) {
-        const secret: string = option.secret || "config.server.secret";
+        const secret: string = option.secret || "secret";
 
         return jsonwebtoken.sign(payload, secret, { expiresIn: option.exp })
     }
     static decodeToken(token: string, option?: IDecodeTokenOption): IAccessToken | undefined {
         try {
-            const secret = (option && option.secret) || "config.server.secret";
+            const secret = (option && option.secret) || "secret";
             return jsonwebtoken.verify(token, secret).valueOf() as IAccessToken;
         } catch (err) {
             // throw errorService.auth.badToken();

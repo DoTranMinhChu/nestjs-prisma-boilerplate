@@ -7,13 +7,18 @@ import configuration from '@configs/configuration';
 import { UserModule } from '@modules/user/user.module';
 import { QueryPrismaMiddleware } from '@middlewares/queryPrisma.middleware';
 import { AuthModule } from '@modules/auth/auth.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from '@filters/allException.filter';
+import { AuthGuard } from '@guards/auth/auth.guard';
+import { JwtModule } from '@nestjs/jwt';
+import { AccountTypesGuard } from '@guards/auth/accountTypes.guard';
+;
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    JwtModule,
     ConfigModule.forRoot(
       {
         envFilePath: resolve(`./.env.${process.env['NODE_ENV']}`),
@@ -29,6 +34,14 @@ import { AllExceptionsFilter } from '@filters/allException.filter';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AccountTypesGuard
     }
   ],
 })
