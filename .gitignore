@@ -37,3 +37,7 @@ lerna-debug.log*
 # Source code
 tsconfig.build.tsbuildinfo
 #.env.*
+
+/openapi
+swagger.yml
+package-lock.json

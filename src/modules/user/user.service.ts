@@ -8,7 +8,11 @@ import { QueryInfoPrismaDto } from '@decorators/queryInfoPrisma/queryInfoPisma.d
 export class UserService {
     constructor(private userRepository: UserRepository) { }
 
-    async findAll(queryInfo: QueryInfoPrismaDto) {
-        return await this.userRepository.findMany(queryInfo);
+    async findAndCountAll(queryInfo: QueryInfoPrismaDto) {
+        return await this.userRepository.findAndCountAll(queryInfo);
+    }
+
+    async findOne(queryInfo: QueryInfoPrismaDto) {
+        return await this.userRepository.findOne(queryInfo);
     }
 }

@@ -12,12 +12,14 @@ import { AllExceptionsFilter } from '@filters/allException.filter';
 import { AuthGuard } from '@guards/auth/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { AccountTypesGuard } from '@guards/auth/accountTypes.guard';
+import { ChatModule } from '@modules/chat/chat.module';
 ;
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    ChatModule,
     JwtModule,
     ConfigModule.forRoot(
       {

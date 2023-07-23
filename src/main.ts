@@ -5,10 +5,16 @@ import { AppModule } from '@modules/app/app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { configSwagger } from '@swagger/swagger.config';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: "*"
+    }
+  });
   // ================ [START] Swagger setup [START] ================
 
   const document = SwaggerModule.createDocument(app, configSwagger, {
@@ -26,6 +32,14 @@ async function bootstrap() {
     },
   });
 
+  const yamlString = yaml.dump(document, { skipInvalid: true });
+
+  try {
+    fs.writeFileSync('./swagger.yml', yamlString, 'utf8');
+    console.log('Swagger documentation exported to swagger.yaml');
+  } catch (err) {
+    console.error('Error exporting Swagger documentation:', err);
+  }
   // ================ [END] Swagger setup [END] ================
 
 
@@ -33,7 +47,7 @@ async function bootstrap() {
 
   await app.listen(+configService.get('server.port'));
 
-  Logger.log(`http://localhost:${configService.get('server.port')}`)
+  Logger.log(`http://localhost:${configService.get('server.port')}/openapi`)
 
 }
 bootstrap();
