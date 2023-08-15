@@ -7,7 +7,7 @@ export class AppService {
     return 'Hello World!';
   }
 
-  getInteralServerErrorException() {
+  getInternalServerErrorException() {
     throw new InternalServerErrorException()
   }
 }

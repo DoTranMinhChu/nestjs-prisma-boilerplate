@@ -5,18 +5,18 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { PRISMA_CLIENT_OPTIONS } from './prisma.config';
 import { PrismaListener } from './prisma.listener';;
 type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
-export type PrismaTransation = Omit<
+
+export type PrismaTransaction = Omit<
     PrismaClient<
         Prisma.PrismaClientOptions,
-        never,
-        Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+        never
     >,
     "$connect" | "$disconnect" | "$on" | "$transaction" | "$use"
 >;
 @Injectable()
 export class PrismaRepository
     extends PrismaClient<Prisma.PrismaClientOptions, 'error' | 'query'>
-    implements OnModuleInit, OnModuleDestroy, PrismaTransation {
+    implements OnModuleInit, OnModuleDestroy, PrismaTransaction {
     constructor() {
         super({ ...PRISMA_CLIENT_OPTIONS });
     }

@@ -1,6 +1,6 @@
 
 import { QueryInfoPrismaDto } from '@decorators/queryInfoPrisma/queryInfoPisma.dto';
-import { PrismaRepository, PrismaTransation } from '@modules/prisma/prisma.repository';
+import { PrismaRepository, PrismaTransaction } from '@modules/prisma/prisma.repository';
 import { Injectable } from '@nestjs/common';
 import { RefreshTokenUser, Prisma } from '@prisma/client';
 
@@ -26,7 +26,7 @@ export class RefreshTokenUserRepository {
     }
     async upsertById(
         refreshTokenUserCreateInput: Prisma.RefreshTokenUserCreateInput,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<RefreshTokenUser> {
         let refreshTokenUser = await tx.refreshTokenUser.findFirst({ where: { id: refreshTokenUserCreateInput.id!! } });
         if (!refreshTokenUser) {
@@ -47,7 +47,7 @@ export class RefreshTokenUserRepository {
     async updateById(
         id: string,
         refreshTokenUserUpdateInput: Prisma.RefreshTokenUserUpdateInput,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<RefreshTokenUser> {
         return await tx.refreshTokenUser.update({
             data: refreshTokenUserUpdateInput,
@@ -58,7 +58,7 @@ export class RefreshTokenUserRepository {
     async updateMany(
         refreshTokenUserUpdateInput: Prisma.RefreshTokenUserUpdateInput,
         query: QueryInfoPrismaDto,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<Prisma.PrismaPromise<Prisma.BatchPayload>> {
         return await tx.refreshTokenUser.updateMany({
             data: refreshTokenUserUpdateInput,
@@ -68,21 +68,21 @@ export class RefreshTokenUserRepository {
 
     async create(
         refreshTokenUserCreateInput: Prisma.RefreshTokenUserCreateInput,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<RefreshTokenUser> {
         return await tx.refreshTokenUser.create({ data: refreshTokenUserCreateInput });
     }
 
     async findOne(
         query?: QueryInfoPrismaDto,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<RefreshTokenUser | null> {
         return await tx.refreshTokenUser.findFirst(query);
     }
 
     async findMany(
         query?: QueryInfoPrismaDto,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<RefreshTokenUser[]> {
 
         return await tx.refreshTokenUser.findMany(query);
@@ -90,14 +90,14 @@ export class RefreshTokenUserRepository {
 
     async deleteById(
         id: string,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<RefreshTokenUser> {
         return await tx.refreshTokenUser.delete({ where: { id } });
     }
 
     async deleteMany(
         refreshTokenUserWhereInput: Prisma.RefreshTokenUserWhereInput,
-        tx: PrismaTransation = this.prisma
+        tx: PrismaTransaction = this.prisma
     ): Promise<Prisma.BatchPayload> {
         return await tx.refreshTokenUser.deleteMany({ where: refreshTokenUserWhereInput });
     }
@@ -111,7 +111,7 @@ export class RefreshTokenUserRepository {
         return await this.prisma.refreshTokenUser.findFirst({ where: { refreshToken } })
     }
 
-    async updateByUserId(userId: string, refreshTokenUserUpdateInput: Prisma.RefreshTokenUserUpdateInput, tx: PrismaTransation = this.prisma): Promise<RefreshTokenUser> {
+    async updateByUserId(userId: string, refreshTokenUserUpdateInput: Prisma.RefreshTokenUserUpdateInput, tx: PrismaTransaction = this.prisma): Promise<RefreshTokenUser> {
         return await tx.refreshTokenUser.update({
             data: refreshTokenUserUpdateInput,
             where: {

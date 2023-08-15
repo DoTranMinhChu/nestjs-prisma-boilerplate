@@ -11,7 +11,7 @@ export class AppController {
   }
 
   @Get("internal-server-error")
-  getInteralServerErrorException() {
-    this.appService.getInteralServerErrorException();
+  getInternalServerErrorException() {
+    this.appService.getInternalServerErrorException();
   }
 }
